@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Login</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+                <!-- Header -->
+                <header id="header">
+                    <a href="index.html" class="logo"><strong>Sistem Penjadwalan Sekolah</strong> by Kelompok 5</a>
+                </header>
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h2>Login</h2>
+                    </header>
+
+                    <form id="loginForm">
+                        <div>
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" required>
+                        </div>
+                        <div>
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div>
+                            <label for="role">Role:</label>
+                            <select id="role" name="role" required>
+                                <option value="admin">Admin</option>
+                                <option value="siswa">Siswa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit">Login</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            // Sample hardcoded credentials for demonstration purposes
+            const adminCredentials = { username: 'admin', password: 'admin123' };
+            const studentCredentials = { username: 'siswa', password: 'siswa123' };
+
+            if (role === 'admin' && username === adminCredentials.username && password === adminCredentials.password) {
+                localStorage.setItem('role', 'admin');
+                window.location.href = 'index.html';
+            } else if (role === 'siswa' && username === studentCredentials.username && password === studentCredentials.password) {
+                localStorage.setItem('role', 'siswa');
+                window.location.href = 'students.html';
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Data Kelas</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Header -->
+                <header id="header">
+                    <a href="index.html" class="logo"><strong>Sistem Penjadwalan Sekolah</strong> by Kelompok 5</a>
+                </header>
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h2>Kelola Data Kelas</h2>
+                    </header>
+
+                    <form id="classForm">
+                        <input type="hidden" id="classId" name="classId">
+                        <div>
+                            <label for="className">Nama Kelas:</label>
+                            <input type="text" id="className" name="className" required>
+                        </div>
+                        <div>
+                            <label for="classLevel">Tingkat:</label>
+                            <input type="text" id="classLevel" name="classLevel" required>
+                        </div>
+                        <div>
+                            <button type="submit" id="submitBtn">Tambah Kelas</button>
+                        </div>
+                    </form>
+
+                    <hr class="major" />
+
+                    <h2>Data Kelas</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Kelas</th>
+                                <th>Tingkat</th>
+                                <th>Edit</th>
+                                <th>Hapus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classTableBody">
+                            <!-- Data kelas akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="Search" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="generic.html">Data Siswa</a></li>
+                        <li><a href="elements.html">Data Guru </a></li>
+                        <li><a href="Class.html"> Data Kelas </a></li>
+                        <li><a href="Mapel.html"> Data Mapel </a></li>
+                        <li><a href="Jadwal.html"> Data Jadwal</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>Tentang Sekolah</h2>
+                    </header>
+                    <p>Sekolah Al Falah didirikan pada tahun 1965 dan telah berkomitmen untuk memberikan pendidikan berkualitas selama lebih dari 50 tahun. Sekolah ini telah menghasilkan banyak lulusan yang sukses di berbagai bidang dan terus berupaya untuk meningkatkan kualitas pendidikan melalui inovasi dan pengembangan kurikulum yang relevan dengan kebutuhan zaman.</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope"><a href="#">smpalfatah@gmail.com</a></li>
+                        <li class="icon solid fa-phone">(000) 0811-5421-2614</li>
+                        <li class="icon solid fa-home">Jalan Kebun Raya No. 124<br /></li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Sistem Penjadwalan by Kelompok 5 <a href="https://unsplash.com"></a><a href="https://html5up.net"></a>.</p>
+								</footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array untuk menyimpan data kelas sementara
+        let classes = [];
+
+        // Memuat data kelas awal jika ada
+        window.onload = function() {
+            if (localStorage.getItem('classes')) {
+                classes = JSON.parse(localStorage.getItem('classes'));
+                renderClasses();
+            }
+        };
+
+        // Mengambil data dari form dan menambahkan/mengedit kelas
+        document.getElementById('classForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const className = document.getElementById('className').value;
+            const classLevel = document.getElementById('classLevel').value;
+
+            const classId = document.getElementById('classId').value;
+
+            if (classId) {
+                // Jika sedang edit, perbarui data kelas
+                const index = classes.findIndex(cls => cls.id === parseInt(classId));
+                if (index !== -1) {
+                    classes[index].className = className;
+                    classes[index].classLevel = classLevel;
+                }
+            } else {
+                // Jika tambah baru, buat objek baru kelas
+                const newClass = {
+                    id: new Date().getTime(),
+                    className: className,
+                    classLevel: classLevel
+                };
+                classes.push(newClass);
+            }
+
+            // Simpan data ke local storage dan render ulang tabel
+            localStorage.setItem('classes', JSON.stringify(classes));
+            renderClasses();
+
+            // Reset form setelah ditambahkan atau diubah
+            document.getElementById('classForm').reset();
+            document.getElementById('classId').value = '';
+        });
+
+        // Fungsi untuk merender ulang data kelas pada tabel
+        function renderClasses() {
+            const tableBody = document.getElementById('classTableBody');
+            tableBody.innerHTML = '';
+
+            classes.forEach(cls => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${cls.className}</td>
+                    <td>${cls.classLevel}</td>
+                    <td><button onclick="editClass(${cls.id})">Edit</button></td>
+                    <td><button onclick="deleteClass(${cls.id})">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk menghapus kelas berdasarkan ID
+        function deleteClass(id) {
+            classes = classes.filter(cls => cls.id !== id);
+            localStorage.setItem('classes', JSON.stringify(classes));
+            renderClasses();
+        }
+
+        // Fungsi untuk mengisi form dengan data kelas yang akan diubah
+        function editClass(id) {
+            const cls = classes.find(cls => cls.id === id);
+            if (cls) {
+                document.getElementById('className').value = cls.className;
+                document.getElementById('classLevel').value = cls.classLevel;
+                document.getElementById('classId').value = cls.id;
+            }
+        }
+    </script>
+</body>
+</html>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>

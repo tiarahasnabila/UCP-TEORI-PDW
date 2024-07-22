@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Data Siswa</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!--CSS Eksternal-->
+    <link rel="stylesheet" href="assets/css/main.css" /> 
+    <!--CSS Internal-->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Header -->
+                <header id="header">
+                    <a href="index.html" class="logo"><strong>Sistem Penjadwalan Sekolah</strong> by Kelompok 5</a>
+                </header>
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h2>Kelola Data Siswa</h2>
+                    </header>
+
+                    <form id="studentForm">
+                        <input type="hidden" id="studentId" name="studentId">
+                        <div>
+                            <label for="name">Nama:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div>
+                            <label for="age">Umur:</label>
+                            <input type="number" id="age" name="age" required>
+                        </div>
+                        <div>
+                            <label for="class">Kelas:</label>
+                            <input type="text" id="class" name="class" required>
+                        </div>
+                        <div>
+                            <button type="submit" id="submitBtn">Tambah Siswa</button>
+                        </div>
+                    </form>
+
+                    <hr class="major" />
+
+                    <h2>Data Siswa</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Umur</th>
+                                <th>Kelas</th>
+                                <th>Edit</th>
+                                <th>Hapus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <!-- Data siswa akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="Search" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="generic.html">Data Siswa</a></li>
+                        <li><a href="elements.html">Data Guru </a></li>
+                        <li><a href="Class.html"> Data Kelas </a></li>
+                        <li><a href="Mapel.html"> Data Mapel </a></li>
+                        <li><a href="Jadwal.html"> Data Jadwal</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>Tentang Sekolah</h2>
+                    </header>
+                    <p>Sekolah Al Falah didirikan pada tahun 1965 dan telah berkomitmen untuk memberikan pendidikan berkualitas selama lebih dari 50 tahun. Sekolah ini telah menghasilkan banyak lulusan yang sukses di berbagai bidang dan terus berupaya untuk meningkatkan kualitas pendidikan melalui inovasi dan pengembangan kurikulum yang relevan dengan kebutuhan zaman.</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope"><a href="#">smpalfatah@gmail.com</a></li>
+                        <li class="icon solid fa-phone">(000) 0811-5421-2614</li>
+                        <li class="icon solid fa-home">Jalan Kebun Raya No. 124<br /></li>
+                    </ul>
+                </section>
+
+               <!-- Footer -->
+				<footer id="footer">
+				    <p class="copyright">&copy; Sistem Penjadwalan by Kelompok 5 <a href="https://unsplash.com"></a><a href="https://html5up.net"></a>.</p>
+					</footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array untuk menyimpan data siswa sementara
+        let students = [];
+
+        // Memuat data siswa awal jika ada
+        window.onload = function() {
+            if (localStorage.getItem('students')) {
+                students = JSON.parse(localStorage.getItem('students'));
+                renderStudents();
+            }
+        };
+
+        // Mengambil data dari form dan menambahkan/mengedit siswa
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const classLevel = document.getElementById('class').value;
+
+            const studentId = document.getElementById('studentId').value;
+
+            if (studentId) {
+                // Jika sedang edit, perbarui data siswa
+                const index = students.findIndex(student => student.id === parseInt(studentId));
+                if (index !== -1) {
+                    students[index].name = name;
+                    students[index].age = age;
+                    students[index].class = classLevel;
+                }
+            } else {
+                // Jika tambah baru, buat objek baru siswa
+                const student = {
+                    id: new Date().getTime(),
+                    name: name,
+                    age: age,
+                    class: classLevel
+                };
+                students.push(student);
+            }
+
+            // Simpan data ke local storage dan render ulang tabel
+            localStorage.setItem('students', JSON.stringify(students));
+            renderStudents();
+
+            // Reset form setelah ditambahkan atau diubah
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentId').value = '';
+        });
+
+        // Fungsi untuk merender ulang data siswa pada tabel
+        function renderStudents() {
+            const tableBody = document.getElementById('studentTableBody');
+            tableBody.innerHTML = '';
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.class}</td>
+                    <td><button onclick="editStudent(${student.id})">Edit</button></td>
+                    <td><button onclick="deleteStudent(${student.id})">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk menghapus siswa berdasarkan ID
+        function deleteStudent(id) {
+            students = students.filter(student => student.id !== id);
+            localStorage.setItem('students', JSON.stringify(students));
+            renderStudents();
+        }
+
+        // Fungsi untuk mengisi form dengan data siswa yang akan diubah
+        function editStudent(id) {
+            const student = students.find(student => student.id === id);
+            if (student) {
+                document.getElementById('name').value = student.name;
+                document.getElementById('age').value = student.age;
+                document.getElementById('class').value = student.class;
+                document.getElementById('studentId').value = student.id;
+            }
+        }
+    </script>
+</body>
+</html>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
+

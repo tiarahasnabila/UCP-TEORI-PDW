@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Data Jadwal</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!--CSS Eksternal-->
+    <link rel="stylesheet" href="assets/css/main.css" /> 
+    <!--CSS Internal-->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Header -->
+                <header id="header">
+                    <a href="index.html" class="logo"><strong>Sistem Penjadwalan Sekolah</strong> by Kelompok 5</a>
+                </header>
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h2>Kelola Data Jadwal</h2>
+                    </header>
+
+                    <form id="scheduleForm">
+                        <input type="hidden" id="scheduleId" name="scheduleId">
+                        <div>
+                            <label for="scheduleClass">Kelas:</label>
+                            <input type="text" id="scheduleClass" name="scheduleClass" required>
+                        </div>
+                        <div>
+                            <label for="scheduleSubject">Mata Pelajaran:</label>
+                            <input type="text" id="scheduleSubject" name="scheduleSubject" required>
+                        </div>
+                        <div>
+                            <label for="scheduleDay">Hari:</label>
+                            <input type="text" id="scheduleDay" name="scheduleDay" required>
+                        </div>
+                        <div>
+                            <label for="scheduleTime">Waktu:</label>
+                            <input type="text" id="scheduleTime" name="scheduleTime" required>
+                        </div>
+                        <div>
+                            <button type="submit" id="submitBtn">Tambah Jadwal</button>
+                        </div>
+                    </form>
+
+                    <hr class="major" />
+
+                    <h2>Data Jadwal</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Hari</th>
+                                <th>Waktu</th>
+                                <th>Edit</th>
+                                <th>Hapus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            <!-- Data jadwal akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="Search" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="generic.html">Data Siswa</a></li>
+                        <li><a href="elements.html">Data Guru </a></li>
+                        <li><a href="Class.html"> Data Kelas </a></li>
+                        <li><a href="Mapel.html"> Data Mapel </a></li>
+                        <li><a href="Jadwal.html"> Data Jadwal</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>Tentang Sekolah</h2>
+                    </header>
+                    <p>Sekolah Al Falah didirikan pada tahun 1965 dan telah berkomitmen untuk memberikan pendidikan berkualitas selama lebih dari 50 tahun. Sekolah ini telah menghasilkan banyak lulusan yang sukses di berbagai bidang dan terus berupaya untuk meningkatkan kualitas pendidikan melalui inovasi dan pengembangan kurikulum yang relevan dengan kebutuhan zaman.</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope"><a href="#">smpalfatah@gmail.com</a></li>
+                        <li class="icon solid fa-phone">(000) 0811-5421-2614</li>
+                        <li class="icon solid fa-home">Jalan Kebun Raya No. 124<br /></li>
+                    </ul>
+                </section>
+
+               <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">&copy; Sistem Penjadwalan by Kelompok 5 <a href="https://unsplash.com"></a><a href="https://html5up.net"></a>.</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array untuk menyimpan data jadwal sementara
+        let schedules = [];
+
+        // Memuat data jadwal awal jika ada
+        window.onload = function() {
+            if (localStorage.getItem('schedules')) {
+                schedules = JSON.parse(localStorage.getItem('schedules'));
+                renderSchedules();
+            }
+        };
+
+        // Mengambil data dari form dan menambahkan/mengedit jadwal
+        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const scheduleClass = document.getElementById('scheduleClass').value;
+            const scheduleSubject = document.getElementById('scheduleSubject').value;
+            const scheduleDay = document.getElementById('scheduleDay').value;
+            const scheduleTime = document.getElementById('scheduleTime').value;
+
+            const scheduleId = document.getElementById('scheduleId').value;
+
+            if (scheduleId) {
+                // Jika sedang edit, perbarui data jadwal
+                const index = schedules.findIndex(sch => sch.id === parseInt(scheduleId));
+                if (index !== -1) {
+                    schedules[index].scheduleClass = scheduleClass;
+                    schedules[index].scheduleSubject = scheduleSubject;
+                    schedules[index].scheduleDay = scheduleDay;
+                    schedules[index].scheduleTime = scheduleTime;
+                }
+            } else {
+                // Jika tambah baru, buat objek baru jadwal
+                const newSchedule = {
+                    id: new Date().getTime(),
+                    scheduleClass: scheduleClass,
+                    scheduleSubject: scheduleSubject,
+                    scheduleDay: scheduleDay,
+                    scheduleTime: scheduleTime
+                };
+                schedules.push(newSchedule);
+            }
+
+            // Simpan data ke local storage dan render ulang tabel
+            localStorage.setItem('schedules', JSON.stringify(schedules));
+            renderSchedules();
+
+            // Reset form setelah ditambahkan atau diubah
+            document.getElementById('scheduleForm').reset();
+            document.getElementById('scheduleId').value = '';
+        });
+
+        // Fungsi untuk merender ulang data jadwal pada tabel
+        function renderSchedules() {
+            const tableBody = document.getElementById('scheduleTableBody');
+            tableBody.innerHTML = '';
+
+            schedules.forEach(sch => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sch.scheduleClass}</td>
+                    <td>${sch.scheduleSubject}</td>
+                    <td>${sch.scheduleDay}</td>
+                    <td>${sch.scheduleTime}</td>
+                    <td><button onclick="editSchedule(${sch.id})">Edit</button></td>
+                    <td><button onclick="deleteSchedule(${sch.id})">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk menghapus jadwal berdasarkan ID
+        function deleteSchedule(id) {
+            schedules = schedules.filter(sch => sch.id !== id);
+            localStorage.setItem('schedules', JSON.stringify(schedules));
+            renderSchedules();
+        }
+
+        // Fungsi untuk mengisi form dengan data jadwal yang akan diubah
+        function editSchedule(id) {
+            const sch = schedules.find(sch => sch.id === id);
+            if (sch) {
+                document.getElementById('scheduleClass').value = sch.scheduleClass;
+                document.getElementById('scheduleSubject').value = sch.scheduleSubject;
+                document.getElementById('scheduleDay').value = sch.scheduleDay;
+                document.getElementById('scheduleTime').value = sch.scheduleTime;
+                document.getElementById('scheduleId').value = sch.id;
+            }
+        }
+    </script>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+</html>

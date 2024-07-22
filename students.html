@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Data Siswa</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+                <!-- Header -->
+                <header id="header">
+                    <a href="index.html" class="logo"><strong>Sistem Penjadwalan Sekolah</strong> by Kelompok 5</a>
+                    <a href="login.html" class="button small">Logout</a>
+                </header>
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h2>Data Sekolah</h2>
+                    </header>
+
+                    <h3>Data Siswa</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Umur</th>
+                                <th>Kelas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <!-- Data siswa akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+
+                    <h3>Data Guru</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Umur</th>
+                                <th>Mata Pelajaran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherTableBody">
+                            <!-- Data guru akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+
+                    <h3>Data Kelas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Kelas</th>
+                                <th>Tingkat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classTableBody">
+                            <!-- Data kelas akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+
+                    <h3>Data Mata Pelajaran</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Mata Pelajaran</th>
+                                <th>Deskripsi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectTableBody">
+                            <!-- Data mata pelajaran akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+
+                    <h3>Data Jadwal</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Hari</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            <!-- Data jadwal akan ditampilkan di sini -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk memuat data siswa dari localStorage dan menampilkan di tabel
+        function loadStudentData() {
+            const studentTableBody = document.getElementById('studentTableBody');
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+
+            students.forEach(student => {
+                const name = student.name || '';
+                const age = student.age || '';
+                const className = student.className || '';
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${name}</td><td>${age}</td><td>${className}</td>`;
+                studentTableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk memuat data guru dari localStorage dan menampilkan di tabel
+        function loadTeacherData() {
+            const teacherTableBody = document.getElementById('teacherTableBody');
+            const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+
+            teachers.forEach(teacher => {
+                const name = teacher.name || '';
+                const age = teacher.age || '';
+                const subject = teacher.subject || '';
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${name}</td><td>${age}</td><td>${subject}</td>`;
+                teacherTableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk memuat data kelas dari localStorage dan menampilkan di tabel
+        function loadClassData() {
+            const classTableBody = document.getElementById('classTableBody');
+            const classes = JSON.parse(localStorage.getItem('classes')) || [];
+
+            classes.forEach(classItem => {
+                const className = classItem.className || '';
+                const classLevel = classItem.classLevel || '';
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${className}</td><td>${classLevel}</td>`;
+                classTableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk memuat data mata pelajaran dari localStorage dan menampilkan di tabel
+        function loadSubjectData() {
+            const subjectTableBody = document.getElementById('subjectTableBody');
+            const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+
+            subjects.forEach(subject => {
+                const subjectName = subject.subjectName || '';
+                const subjectDescription = subject.subjectDescription || '';
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${subjectName}</td><td>${subjectDescription}</td>`;
+                subjectTableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk memuat data jadwal dari localStorage dan menampilkan di tabel
+        function loadScheduleData() {
+            const scheduleTableBody = document.getElementById('scheduleTableBody');
+            const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
+
+            schedules.forEach(schedule => {
+                const scheduleClass = schedule.scheduleClass || '';
+                const scheduleSubject = schedule.scheduleSubject || '';
+                const scheduleDay = schedule.scheduleDay || '';
+                const scheduleTime = schedule.scheduleTime || '';
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${scheduleClass}</td><td>${scheduleSubject}</td><td>${scheduleDay}</td><td>${scheduleTime}</td>`;
+                scheduleTableBody.appendChild(row);
+            });
+        }
+
+        // Memuat semua data saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudentData();
+            loadTeacherData();
+            loadClassData();
+            loadSubjectData();
+            loadScheduleData();
+        });
+    </script>
+</body>
+</html>
